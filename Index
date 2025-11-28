@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AppStoreX — Home</title>
+
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+
+  <style>
+    :root{
+      --brand:#0f9d58;
+      --brand-2:#0b7e47;
+      --ink:#111827;
+      --muted:#6b7280;
+      --bg:#f5f7fb;
+      --card:#ffffff;
+      --shadow:0 10px 24px rgba(0,0,0,.08);
+      --radius:16px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; background:var(--bg); color:var(--ink);
+      font-family:"Poppins", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+    }
+
+    /* Header */
+    header{
+      position:sticky; top:0; z-index:4;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:12px 16px; background:#fff; box-shadow:var(--shadow);
+    }
+    .brand{display:flex; align-items:center; gap:10px; font-weight:700}
+    .brand i{color:var(--brand)}
+    .hdr-actions{display:flex; gap:10px; align-items:center}
+    .icon-btn{
+      width:40px; height:40px; border-radius:12px; display:grid; place-items:center;
+      background:#f1f5f9; border:0; cursor:pointer;
+    }
+
+    /* Bottom nav */
+    .bottom-nav{
+      position:fixed; left:0; right:0; bottom:0; z-index:3;
+      background:#fff; box-shadow:0 -6px 18px rgba(0,0,0,.06);
+      display:grid; grid-template-columns: repeat(4,1fr);
+    }
+    .bottom-nav a{
+      text-decoration:none; color:var(--muted); text-align:center; padding:10px 0 12px;
+      display:flex; flex-direction:column; align-items:center; gap:5px; font-size:12px;
+    }
+    .bottom-nav a.active{color:var(--brand)}
+
+    main{padding:14px; padding-bottom:86px; max-width:980px; margin:0 auto}
+
+    /* Slider */
+    .slider{
+      position:relative; height:170px; border-radius:16px; overflow:hidden; box-shadow:var(--shadow);
+      background:linear-gradient(135deg,#e7fff2,#eaf6ff);
+    }
+    .slide{position:absolute; inset:0; background-size:cover; background-position:center; opacity:0; transition:opacity .45s}
+    .slide.active{opacity:1}
+    .slider .nav{
+      position:absolute; inset:0; display:flex; align-items:center; justify-content:space-between; padding:0 8px;
+    }
+    .slider .nav button{background:rgba(0,0,0,.35); color:#fff; border:0; width:36px; height:36px; border-radius:999px; cursor:pointer}
+
+    /* Category chips */
+    .chips{display:flex; gap:10px; overflow:auto; padding:10px 2px}
+    .chip{padding:8px 12px; border-radius:999px; white-space:nowrap; font-size:13px; cursor:pointer; border:1px solid #e5e7eb}
+    .chip.active{background:var(--brand); color:#fff; border-color:var(--brand)}
+
+    /* Grid */
+    .grid{display:grid; gap:12px; grid-template-columns: repeat(2,minmax(0,1fr))}
+    @media (min-width:640px){ .grid{grid-template-columns: repeat(3,minmax(0,1fr))} }
+    @media (min-width:900px){ .grid{grid-template-columns: repeat(5,minmax(0,1fr))} }
+
+    .card{
+      background:var(--card); border-radius:14px; padding:10px; box-shadow:var(--shadow);
+      display:flex; gap:10px; align-items:center; cursor:pointer;
+    }
+    .app-icon{width:56px; height:56px; border-radius:12px; object-fit:cover; background:#eef2f4}
+    .app-info{min-width:0}
+    .app-name{font-size:14px; font-weight:600; margin:0 0 2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+    .app-sub{font-size:12px; color:var(--muted)}
+    .install-btn{margin-left:auto; border:0; background:var(--brand); color:#fff; padding:8px 10px; border-radius:10px; font-size:12px; cursor:pointer}
+
+    /* Pages */
+    .page{display:none}
+    .page.active{display:block}
+
+    /* Modal */
+    .modal{position:fixed; inset:0; background:rgba(15,23,42,.55); display:none; align-items:center; justify-content:center; z-index:10}
+    .modal .box{width:min(720px,94vw); background:#fff; border-radius:20px; overflow:hidden; box-shadow:var(--shadow)}
+    .modal .banner{height:160px; background:#eef2f4; background-size:cover; background-position:center}
+    .modal .content{display:grid; grid-template-columns:96px 1fr auto; gap:16px; padding:14px}
+    .modal .content img{width:96px; height:96px; border-radius:20px; object-fit:cover}
+    .modal h3{margin:0}
+    .modal .desc{padding:0 14px 16px; color:#475569}
+    .modal .foot{display:flex; gap:10px; justify-content:flex-end; padding:12px 14px; background:#f8fafc}
+    .btn{border:0; padding:10px 14px; border-radius:12px; cursor:pointer; font-weight:600}
+    .btn-primary{background:var(--brand); color:#fff}
+    .btn-ghost{background:#eef2f7; color:#0f172a}
+
+    .section-title{margin:14px 4px 8px; font-weight:700}
+    .empty{padding:26px; text-align:center; color:var(--muted)}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="brand"><i class="fa-brands fa-google-play"></i> <span>AppStoreX</span></div>
+  <div class="hdr-actions">
+    <button class="icon-btn" id="btn-search"><i class="fa fa-magnifying-glass"></i></button>
+    <a class="icon-btn" href="admin.html" title="Admin Panel"><i class="fa fa-user-shield"></i></a>
+  </div>
+</header>
+
+<main>
+  <!-- Home -->
+  <section id="home" class="page active">
+    <div class="slider" id="slider">
+      <div class="slide fallback active" data-title="Welcome to AppStoreX"
+           style="display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <div style="font-size:22px; font-weight:700; color:var(--brand-2)">স্বাগতম — AppStoreX</div>
+        <div style="color:var(--brand-2); opacity:.85">সুন্দর, দ্রুত এবং সাবলীল অ্যাপ স্টোর।</div>
+      </div>
+      <!-- additional slides can be injected dynamically -->
+      <div class="nav">
+        <button id="slide-prev"><i class="fa fa-chevron-left"></i></button>
+        <button id="slide-next"><i class="fa fa-chevron-right"></i></button>
+      </div>
+    </div>
+
+    <h3 class="section-title">Categories</h3>
+    <div class="chips" id="category-chips"></div>
+
+    <h3 class="section-title">Top apps</h3>
+    <div id="apps-grid" class="grid"></div>
+  </section>
+
+  <!-- Search page -->
+  <section id="search" class="page">
+    <div class="card" style="padding:12px">
+      <input id="search-input" placeholder="Search apps..." style="width:100%; padding:12px 14px; border-radius:12px; border:1px solid #e5e7eb; outline:none"/>
+    </div>
+    <div id="search-grid" class="grid"></div>
+  </section>
+</main>
+
+<!-- bottom nav -->
+<nav class="bottom-nav">
+  <a href="#home" class="active" data-page="home"><i class="fa fa-house"></i><span>Home</span></a>
+  <a href="#search" data-page="search"><i class="fa fa-magnifying-glass"></i><span>Search</span></a>
+  <a href="#myapps" data-page="home"><i class="fa fa-download"></i><span>My apps</span><span class="badge" id="dl-badge">0</span></a>
+  <a href="admin.html"><i class="fa fa-user-shield"></i><span>Admin</span></a>
+</nav>
+
+<!-- App modal -->
+<div class="modal" id="app-modal" aria-hidden="true">
+  <div class="box">
+    <div class="banner" id="m-banner"></div>
+    <div class="content">
+      <img id="m-icon" alt="">
+      <div>
+        <h3 id="m-name">App name</h3>
+        <div class="muted" id="m-meta">Category • 4.5 ★ • 25 MB</div>
+      </div>
+      <button class="btn btn-primary" id="m-install"><i class="fa fa-download"></i> Install</button>
+    </div>
+    <div class="desc" id="m-desc"></div>
+    <div class="foot">
+      <button class="btn btn-ghost" id="m-close">Close</button>
+      <a class="btn btn-primary" id="m-install-2" target="_blank" rel="noopener">Install</a>
+    </div>
+  </div>
+</div>
+
+<script>
+/*
+  App logic:
+  - apps stored in localStorage key "appstorex_apps" as JSON array
+  - Admin panel writes to same key
+  - Optional: replace with Firebase (instructions near bottom)
+*/
+
+/* ---------- Utilities ---------- */
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+
+/* ---------- Routing ---------- */
+function setPage(hash){
+  if(!hash) hash = "#home";
+  $$(".page").forEach(p => p.classList.remove("active"));
+  $$(".bottom-nav a").forEach(a => a.classList.remove("active"));
+  const page = hash.replace("#","");
+  const el = document.getElementById(page) || document.getElementById("home");
+  el.classList.add("active");
+  const nav = document.querySelector(`.bottom-nav a[href="#${page}"]`);
+  if(nav) nav.classList.add("active");
+}
+window.addEventListener("hashchange", ()=> setPage(location.hash));
+setPage(location.hash);
+$("#btn-search").addEventListener("click", ()=> { location.hash = "#search"; });
+
+/* ---------- Data helpers ---------- */
+const SAMPLE_APPS = [
+  {
+    id: "sample-1",
+    name: "PhotoMagic",
+    category: "ফটো",
+    icon: "https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=400&auto=format&fit=crop&ixlib=rb-4.0.3&s=6a0fe3",
+    banner: "",
+    desc: "সহজ ফটো এডিটর ও ফিল্টার।",
+    rating: 4.6,
+    size: "18 MB",
+    url: "https://example.com/photo"
+  },
+  {
+    id: "sample-2",
+    name: "QuickNotes",
+    category: "উৎপাদনশীলতা",
+    icon: "https://images.unsplash.com/photo-1555529669-6c6a2b0f1f8a?q=80&w=400&auto=format&fit=crop&ixlib=rb-4.0.3&s=2f45bd",
+    banner: "",
+    desc: "লেনদেন, নোট, এবং টাস্ক ম্যানেজার।",
+    rating: 4.4,
+    size: "10 MB",
+    url: "https://example.com/notes"
+  }
+];
+
+function loadAppsFromStorage(){
+  try {
+    const raw = localStorage.getItem("appstorex_apps");
+    if(!raw) {
+      localStorage.setItem("appstorex_apps", JSON.stringify(SAMPLE_APPS));
+      return SAMPLE_APPS.slice();
+    }
+    return JSON.parse(raw) || [];
+  } catch(e){
+    console.error("Failed to parse apps:", e);
+    return [];
+  }
+}
+
+function saveAppsToStorage(arr){
+  localStorage.setItem("appstorex_apps", JSON.stringify(arr));
+}
+
+/* ---------- UI rendering ---------- */
+let apps = loadAppsFromStorage();
+let categories = ["সবগুলো"];
+
+function buildCategories(){
+  const set = new Set(["সবগুলো"]);
+  apps.forEach(a => a.category && set.add(a.category));
+  categories = Array.from(set);
+  const chips = $("#category-chips");
+  chips.innerHTML = "";
+  categories.forEach((c, idx) => {
+    const btn = document.createElement("button");
+    btn.className = "chip" + (idx===0?" active":"");
+    btn.textContent = c;
+    btn.addEventListener("click", ()=> {
+      $$(".chip").forEach(x=>x.classList.remove("active"));
+      btn.classList.add("active");
+      renderAppsGrid(c==="সবগুলো" ? apps : apps.filter(a=>a.category===c));
+    });
+    chips.appendChild(btn);
+  });
+}
+
+function createAppCard(app){
+  const card = document.createElement("div");
+  card.className = "card";
+  card.innerHTML = `
+    <img class="app-icon" src="${app.icon||''}" alt="${escapeHtml(app.name)}" onerror="this.style.background='#eef2f4'">
+    <div class="app-info">
+      <div class="app-name">${escapeHtml(app.name)}</div>
+      <div class="app-sub">${escapeHtml(app.category || '')} • ${app.rating || '—'} ★ • ${app.size || '—'}</div>
+    </div>
+    <button class="install-btn">Install</button>
+  `;
+  // open modal on card click
+  card.addEventListener("click", (e)=> {
+    // don't open modal when clicking the install button itself (we'll handle)
+    if(e.target.closest(".install-btn")) return;
+    openAppModal(app);
+  });
+  // install button
+  const btn = card.querySelector(".install-btn");
+  btn.addEventListener("click", (e)=> {
+    e.stopPropagation();
+    doInstall(app);
+  });
+  return card;
+}
+
+function renderAppsGrid(list){
+  const grid = $("#apps-grid");
+  grid.innerHTML = "";
+  if(!list || list.length===0){
+    grid.innerHTML = `<div class="empty">কোনো অ্যাপ পাওয়া যায়নি</div>`;
+    return;
+  }
+  list.forEach(a => grid.appendChild(createAppCard(a)));
+}
+
+function renderSearchGrid(results){
+  const grid = $("#search-grid");
+  grid.innerHTML = "";
+  if(!results || results.length===0){
+    grid.innerHTML = `<div class="empty">কিছু খুঁজে পাওয়া যায়নি</div>`;
+    return;
+  }
+  results.forEach(a => grid.appendChild(createAppCard(a)));
+}
+
+/* ---------- Modal ---------- */
+const modal = $("#app-modal");
+function openModal(){ modal.style.display = "flex"; modal.setAttribute("aria-hidden","false"); }
+function closeModal(){ modal.style.display = "none"; modal.setAttribute("aria-hidden","true"); }
+
+function openAppModal(app){
+  $("#m-banner").style.backgroundImage = app.banner ? `url(${app.banner})` : "";
+  $("#m-icon").src = app.icon || "";
+  $("#m-name").textContent = app.name || "App";
+  $("#m-meta").textContent = `${app.category || ''} • ${app.rating || '—'} ★ • ${app.size || '—'}`;
+  $("#m-desc").textContent = app.desc || "";
+  $("#m-install-2").href = app.url || "#";
+  $("#m-install").onclick = ()=> doInstall(app);
+  openModal();
+}
+$("#m-close").addEventListener("click", closeModal);
+modal.addEventListener("click", (e)=> { if(e.target===modal) closeModal(); });
+
+/* ---------- Install logic ---------- */
+function doInstall(app){
+  // simple install simulation: increment badge and open link in new tab
+  const badge = $("#dl-badge");
+  const cur = Number(badge.textContent||"0") || 0;
+  badge.textContent = cur + 1;
+  // open download link if provided
+  if(app.url){
+    window.open(app.url, "_blank", "noopener");
+  } else {
+    alert("ডাউনলোড লিংক নেই (ছকানুকরণ)।");
+  }
+}
+
+/* ---------- Search ---------- */
+$("#search-input").addEventListener("input", (e)=> {
+  const q = e.target.value.trim().toLowerCase();
+  if(!q){
+    renderSearchGrid([]);
+    return;
+  }
+  const res = apps.filter(a => {
+    return (a.name||'').toLowerCase().includes(q) ||
+           (a.category||'').toLowerCase().includes(q) ||
+           (a.desc||'').toLowerCase().includes(q);
+  });
+  renderSearchGrid(res);
+});
+
+/* ---------- Slider controls ---------- */
+let currentSlide = 0;
+function initSlider(){
+  const slider = $("#slider");
+  // we use only the fallback slide by default; keep hooks for future slides
+  const slides = slider.querySelectorAll(".slide");
+  document.getElementById("slide-prev").addEventListener("click", ()=> {
+    goSlide(-1);
+  });
+  document.getElementById("slide-next").addEventListener("click", ()=> {
+    goSlide(1);
+  });
+  function goSlide(dir){
+    const s = slider.querySelectorAll(".slide");
+    if(s.length<=1) return;
+    s[currentSlide].classList.remove("active");
+    currentSlide = (currentSlide + dir + s.length) % s.length;
+    s[currentSlide].classList.add("active");
+  }
+}
+initSlider();
+
+/* ---------- Helpers / Init ---------- */
+function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, function(m){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]); }); }
+
+function refreshAll(){
+  apps = loadAppsFromStorage();
+  buildCategories();
+  renderAppsGrid(apps);
+}
+refreshAll();
+
+/* If admin page in same origin updates localStorage, we can react to storage event */
+window.addEventListener("storage", (e)=> {
+  if(e.key === "appstorex_apps"){
+    refreshAll();
+  }
+});
+
+/* ---------- Optional: Firebase notes ----------
+If you want to use Firebase Realtime Database or Firestore instead of localStorage,
+uncomment and include firebase sdk and replace the code where apps are loaded/saved.
+
+Example (Modular v9):
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "...",
+  authDomain: "...",
+  databaseURL: "...",
+  projectId: "...",
+  storageBucket: "...",
+  messagingSenderId: "...",
+  appId: "..."
+};
+
+const fb = initializeApp(firebaseConfig);
+const db = getDatabase(fb);
+const appsRef = ref(db, 'apps');
+
+onValue(appsRef, snap => {
+  const val = snap.val();
+  apps = val ? Object.values(val) : [];
+  render...
+});
+
+To save:
+set(appsRef, appsObject);
+---------------------------------------------- */
+
+</script>
+</body>
+</html>
